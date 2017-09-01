@@ -1,23 +1,3 @@
-function loadProfileSuggestions(user, successCallback) {
-	var url = "/lrs-analysis/api/users/" + user + "/profile";
-	$.ajax(url, {
-		success: successCallback,
-		error: function(jqXHR, textStatus, errorThrown) { console.error(textStatus, errorThrown); }
-	});
-}
-
-function createSuggestionsTag(entrys, tagitElement, clickCallback) {
-	$(document).ready(function() {
-		$.each(entrys, function(index, entry) {
-			tagitElement.append("<li>" + entry + "</li>");
-		});
-		
-        tagitElement.tagit({
-			readOnly: true,
-			onTagClicked: clickCallback
-		});
-    });
-}
 
 /**
  * Maps a server response to labeled data. The returned objects may contain arbitrary fields, but a label field is required
