@@ -31,8 +31,8 @@ public class AnalysisResource {
 	@Path("/{user}/profile")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	public ProfileResponse getProfile(@PathParam("user") String ldapShortname) {
-		try {
-			return new ProfileFilter().getProfile(ldapShortname);
+		try (ProfileFilter profiles = new ProfileFilter()) {
+			return profiles.getProfile(ldapShortname);
 		} catch (Exception e) {
 			throw new WebApplicationException("Could not read data from data source", 500);
 		}
