@@ -1,10 +1,20 @@
+// Type definitions
 
 /**
  * Maps a server response to labeled data. The returned objects may contain arbitrary fields, but a label field is required
  * @callback ResponseMapper
- * @param {*} LRS analysis response
+ * @param {*} tags - LRS analysis response
  * @returns {Array<{label: String}>}
  */
+
+/**
+ * Handles a tag add event. The given tag content may contain arbitrary fields defined in the associated ResponseMapper
+ * @callback TagAddCallback
+ * @param {Array<{label: String}>} tag - Tag content
+ * @see ResponseMapper
+ */
+
+// Implementations
 
 /**
  * 
