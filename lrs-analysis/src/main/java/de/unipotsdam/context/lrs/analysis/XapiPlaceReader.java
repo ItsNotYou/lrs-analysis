@@ -3,8 +3,8 @@ package de.unipotsdam.context.lrs.analysis;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -49,12 +49,12 @@ public class XapiPlaceReader {
 		statements.removeAll(voided);
 		for (Statement stmt : voided) {
 			final String target = ((StatementReference) stmt.getObject()).getId();
-			statements.removeIf(new Predicate<Statement>() {
-
-				public boolean test(Statement t) {
-					return t.getId().equals(target);
+			for (Iterator<Statement> it = statements.iterator(); it.hasNext();) {
+				Statement statement = it.next();
+				if (statement.getId().equals(target)) {
+					it.remove();
 				}
-			});
+			}
 		}
 
 		// Extract geo data

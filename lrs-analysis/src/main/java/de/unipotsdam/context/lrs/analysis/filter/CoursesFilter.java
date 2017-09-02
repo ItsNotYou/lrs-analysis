@@ -1,12 +1,12 @@
 package de.unipotsdam.context.lrs.analysis.filter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -65,10 +65,9 @@ public class CoursesFilter {
 		List<EventGroupings> groupings = events.getResult();
 
 		// check for attendance
-		Predicate<EventGroupings> isNotAttended = new Not<EventGroupings>(new IsAttendedBy(user));
 		for (Iterator<EventGroupings> it = groupings.iterator(); it.hasNext();) {
 			EventGroupings grouping = it.next();
-			if (isNotAttended.test(grouping)) {
+			if (!isAttendedBy(user, grouping)) {
 				it.remove();
 			}
 		}
@@ -87,20 +86,6 @@ public class CoursesFilter {
 		return result;
 	}
 
-	private class Not<T> implements Predicate<T> {
-
-		private Predicate<T> predicate;
-
-		public Not(Predicate<T> predicate) {
-			this.predicate = predicate;
-		}
-
-		@Override
-		public boolean test(T t) {
-			return !predicate.test(t);
-		}
-	}
-
 	// For each group
 	// - Sort by timestamp
 	// - Run events in order and track state
@@ -108,57 +93,47 @@ public class CoursesFilter {
 	// --- event is running and
 	// --- user joined
 	// --- Open statements can be missing
-	private class IsAttendedBy implements Predicate<EventGroupings> {
-
-		private String user;
-
-		public IsAttendedBy(String user) {
-			this.user = user;
-		}
-
-		@Override
-		public boolean test(EventGroupings grouping) {
-			// Sort by timestamp
-			List<EventStatement> statements = grouping.getStatements();
-			statements.sort(new Comparator<EventStatement>() {
-				public int compare(EventStatement o1, EventStatement o2) {
-					return o1.asTimestamp().compareTo(o2.asTimestamp());
-				}
-			});
-
-			// Replay event
-			boolean isRunning = false;
-			boolean isAttending = false;
-			for (EventStatement stmt : grouping.getStatements()) {
-				String verbId = stmt.getVerb().getId();
-				switch (verbId) {
-				case "http://activitystrea.ms/schema/1.0/open":
-					isRunning = true;
-					break;
-				case "http://activitystrea.ms/schema/1.0/close":
-					isRunning = false;
-					break;
-				case "http://id.tincanapi.com/verb/adjourned":
-					isRunning = false;
-					break;
-				case "http://adlnet.gov/expapi/verbs/resumed":
-					isRunning = true;
-					break;
-				case "http://activitystrea.ms/schema/1.0/join":
-					if (stmt.getActor().getMbox().equals(user)) {
-						isAttending = true;
-					}
-					break;
-				case "http://activitystrea.ms/schema/1.0/leave":
-					if (stmt.getActor().getMbox().equals(user)) {
-						isAttending = false;
-					}
-					break;
-				}
+	private boolean isAttendedBy(String user, EventGroupings grouping) {
+		// Sort by timestamp
+		List<EventStatement> statements = grouping.getStatements();
+		Collections.sort(statements, new Comparator<EventStatement>() {
+			public int compare(EventStatement o1, EventStatement o2) {
+				return o1.asTimestamp().compareTo(o2.asTimestamp());
 			}
+		});
 
-			// Check if event is running and user is attending
-			return isRunning && isAttending;
+		// Replay event
+		boolean isRunning = false;
+		boolean isAttending = false;
+		for (EventStatement stmt : grouping.getStatements()) {
+			String verbId = stmt.getVerb().getId();
+			switch (verbId) {
+			case "http://activitystrea.ms/schema/1.0/open":
+				isRunning = true;
+				break;
+			case "http://activitystrea.ms/schema/1.0/close":
+				isRunning = false;
+				break;
+			case "http://id.tincanapi.com/verb/adjourned":
+				isRunning = false;
+				break;
+			case "http://adlnet.gov/expapi/verbs/resumed":
+				isRunning = true;
+				break;
+			case "http://activitystrea.ms/schema/1.0/join":
+				if (stmt.getActor().getMbox().equals(user)) {
+					isAttending = true;
+				}
+				break;
+			case "http://activitystrea.ms/schema/1.0/leave":
+				if (stmt.getActor().getMbox().equals(user)) {
+					isAttending = false;
+				}
+				break;
+			}
 		}
+
+		// Check if event is running and user is attending
+		return isRunning && isAttending;
 	}
 }
