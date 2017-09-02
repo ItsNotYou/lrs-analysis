@@ -19,12 +19,11 @@ public class MongoAccountReader implements Callable<Collection<Account>> {
 		this.ldapShortname = ldapShortname;
 	}
 
+	/**
+	 * Read accounts of {@link #ldapShortname}
+	 */
 	@Override
 	public Collection<Account> call() throws Exception {
-		return readAccountsOf();
-	}
-
-	public Collection<Account> readAccountsOf() {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		List<Object> pipeline = new ArrayList<>();

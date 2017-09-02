@@ -1,8 +1,11 @@
 package de.unipotsdam.context.lrs.analysis;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -16,9 +19,21 @@ import gov.adlnet.xapi.util.Base64;
 
 public class LRS {
 
-	private static final String lrsUrl = "http://lrs.soft.cs.uni-potsdam.de/";
-	private static final String username = "f1e520976fb3cd27127bef0bfd2c4af924bfd2fc";
-	private static final String password = "b4f0955aea62c4d9f94a98e32a400e665f7338a7";
+	private final String lrsUrl;
+	private final String username;
+	private final String password;
+
+	public LRS() throws IOException {
+		// Get LRS configuration
+		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("lrs.properties");
+		Properties properties = new Properties();
+		properties.load(input);
+
+		// Load necessary properties
+		this.lrsUrl = properties.getProperty("lrs.url");
+		this.username = properties.getProperty("lrs.username");
+		this.password = properties.getProperty("lrs.password");
+	}
 
 	public <T> T query(List<Object> pipeline, Class<T> entityType) {
 		String pipeJson = asJson(pipeline);

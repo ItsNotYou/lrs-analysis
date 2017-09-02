@@ -23,12 +23,11 @@ public class MongoLanguageReader implements Callable<Collection<String>> {
 		this.ldapShortname = ldapShortname;
 	}
 
+	/**
+	 * Reads languages of {@link #ldapShortname}
+	 */
 	@Override
 	public Collection<String> call() throws Exception {
-		return readLanguagesOf();
-	}
-
-	public Collection<String> readLanguagesOf() {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		List<Object> pipeline = new ArrayList<>();

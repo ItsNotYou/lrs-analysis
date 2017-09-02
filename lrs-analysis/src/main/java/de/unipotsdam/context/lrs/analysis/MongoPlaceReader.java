@@ -3,14 +3,26 @@ package de.unipotsdam.context.lrs.analysis;
 import static de.unipotsdam.context.lrs.analysis.LRS.map;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import de.unipotsdam.context.lrs.analysis.data.PlaceStatement;
 import de.unipotsdam.context.lrs.analysis.data.PlacesResponse;
 
-public class MongoPlaceReader {
+public class MongoPlaceReader implements Callable<Collection<PlaceStatement>> {
 
-	public List<PlaceStatement> readPlacesOf(String ldapShortname) {
+	private String ldapShortname;
+
+	public MongoPlaceReader(String ldapShortname) {
+		this.ldapShortname = ldapShortname;
+	}
+
+	/**
+	 * Reads places of {@link #ldapShortname}
+	 */
+	@Override
+	public Collection<PlaceStatement> call() throws Exception {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		List<Object> pipeline = new ArrayList<>();

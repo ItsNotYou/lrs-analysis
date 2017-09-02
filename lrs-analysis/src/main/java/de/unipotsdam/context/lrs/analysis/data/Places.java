@@ -1,16 +1,16 @@
 package de.unipotsdam.context.lrs.analysis.data;
 
-import java.util.List;
+import java.util.Collection;
 
 public class Places {
 
-	private List<PlaceStatement> places;
+	private Collection<PlaceStatement> places;
 
-	public List<PlaceStatement> getPlaces() {
+	public Collection<PlaceStatement> getPlaces() {
 		return places;
 	}
 
-	public void setPlaces(List<PlaceStatement> places) {
+	public void setPlaces(Collection<PlaceStatement> places) {
 		this.places = places;
 	}
 }

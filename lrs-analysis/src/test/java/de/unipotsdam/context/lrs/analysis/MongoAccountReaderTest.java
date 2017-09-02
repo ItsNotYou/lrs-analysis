@@ -11,8 +11,8 @@ import de.unipotsdam.context.lrs.analysis.data.Account;
 public class MongoAccountReaderTest {
 
 	@Test
-	public void shouldReadAccounts() {
-		Collection<Account> result = new MongoAccountReader("hgessner").readAccountsOf();
+	public void shouldReadAccounts() throws Exception {
+		Collection<Account> result = new MongoAccountReader("hgessner").call();
 		assertFalse(result.isEmpty());
 	}
 }

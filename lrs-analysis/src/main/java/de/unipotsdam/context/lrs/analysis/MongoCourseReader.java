@@ -20,12 +20,11 @@ public class MongoCourseReader implements Callable<Collection<Course>> {
 		this.ldapShortname = ldapShortname;
 	}
 
+	/**
+	 * Reads attended courses of {@link #ldapShortname}
+	 */
 	@Override
 	public Collection<Course> call() throws Exception {
-		return readAttendedCoursesOf();
-	}
-
-	public Collection<Course> readAttendedCoursesOf() {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		List<Object> pipeline = new ArrayList<>();

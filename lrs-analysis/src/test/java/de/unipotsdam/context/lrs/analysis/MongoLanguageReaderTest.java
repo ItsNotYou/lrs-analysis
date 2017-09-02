@@ -13,8 +13,8 @@ import jersey.repackaged.com.google.common.collect.Lists;
 public class MongoLanguageReaderTest {
 
 	@Test
-	public void shouldReadPlaces() {
-		Collection<String> result = new MongoLanguageReader("hgessner").readLanguagesOf();
+	public void shouldReadPlaces() throws Exception {
+		Collection<String> result = new MongoLanguageReader("hgessner").call();
 
 		System.out.println(result);
 		assertFalse(result.isEmpty());

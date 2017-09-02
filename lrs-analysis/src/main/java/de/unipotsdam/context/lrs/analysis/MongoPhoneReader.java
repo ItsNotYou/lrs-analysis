@@ -19,12 +19,11 @@ public class MongoPhoneReader implements Callable<Collection<String>> {
 		this.ldapShortname = ldapShortname;
 	}
 
+	/**
+	 * Reads phone numbers of {@link #ldapShortname}
+	 */
 	@Override
 	public Collection<String> call() throws Exception {
-		return readPhoneNumbersOf();
-	}
-
-	public Collection<String> readPhoneNumbersOf() {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		List<Object> pipeline = new ArrayList<>();

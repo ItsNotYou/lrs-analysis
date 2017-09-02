@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -21,8 +22,12 @@ public class PlaceResource {
 			throw new BadRequestException("ldapShortname is required");
 		}
 
-		Places result = new Places();
-		result.setPlaces(new MongoPlaceReader().readPlacesOf(ldapShortname));
-		return result;
+		try {
+			Places result = new Places();
+			result.setPlaces(new MongoPlaceReader(ldapShortname).call());
+			return result;
+		} catch (Exception ex) {
+			throw new InternalServerErrorException("Could not read from LRS", ex);
+		}
 	}
 }
