@@ -9,7 +9,7 @@
 		<servlet-class>org.mitre.dsmiley.httpproxy.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>targetUri</param-name>
-			<param-value>http://localhost:7080/lrs-analysis/api</param-value>
+			<param-value>http://lrs.soft.cs.uni-potsdam.de:8080/lrs-analysis/api</param-value>
 		</init-param>
 		<init-param>
 			<param-name>log</param-name>
