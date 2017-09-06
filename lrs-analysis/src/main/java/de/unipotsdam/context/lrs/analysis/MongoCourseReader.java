@@ -11,6 +11,7 @@ import de.unipotsdam.context.lrs.analysis.data.AttendedCourseStatement;
 import de.unipotsdam.context.lrs.analysis.data.AttendedCoursesResponse;
 import de.unipotsdam.context.lrs.analysis.data.Course;
 import de.unipotsdam.context.lrs.analysis.data.CourseName;
+import de.unipotsdam.context.lrs.analysis.data.Semester;
 
 public class MongoCourseReader implements Callable<Collection<Course>> {
 
@@ -28,8 +29,8 @@ public class MongoCourseReader implements Callable<Collection<Course>> {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		List<Object> pipeline = new ArrayList<>();
-		pipeline.add(map("$match", map("statement.actor.mbox", user, "statement.context.contextActivities.category.id", "http://xapi.trainingevidencesystems.com/recipes/attendance/0_0_1#simple", "voided", false)));
-		pipeline.add(map("$group", map("_id", "$statement.object.definition.name")));
+		pipeline.add(map("$match", map("statement.actor.mbox", user, "statement.context.contextActivities.category.id", "http://xapi.trainingevidencesystems.com/recipes/attendance/0_0_1#simple", "statement.context.contextActivities.other.definition.type", "http://id.tincanapi.com/activitytype/semester", "voided", false)));
+		pipeline.add(map("$group", map("_id", "$statement.object.definition.name", "semester", map("$addToSet", "$statement.context.contextActivities.other.definition.extensions.http://id&46;tincanapi&46;com/extension/semester"))));
 
 		AttendedCoursesResponse response = new LRS().query(pipeline, AttendedCoursesResponse.class);
 		return asCourses(response.getResult());
@@ -39,12 +40,23 @@ public class MongoCourseReader implements Callable<Collection<Course>> {
 		Collection<Course> result = new ArrayList<>();
 
 		for (AttendedCourseStatement acs : attendedCourses) {
-			// Select language
-			CourseName name = acs.get_id();
-			if (name.getDeDE() != null) {
-				result.add(new Course(name.getDeDE()));
-			} else if (name.getEnUS() != null) {
-				result.add(new Course(name.getEnUS()));
+			for (Semester semester : acs.getSemester()) {
+				Course course = new Course();
+
+				// Set semester
+				course.setSemesterId(semester.getId());
+				course.setSemesterStart(semester.getStart());
+				course.setSemesterEnd(semester.getEnd());
+
+				// Select language
+				CourseName name = acs.get_id();
+				if (name.getDeDE() != null) {
+					course.setName(name.getDeDE());
+					result.add(course);
+				} else if (name.getEnUS() != null) {
+					course.setName(name.getEnUS());
+					result.add(course);
+				}
 			}
 		}
 

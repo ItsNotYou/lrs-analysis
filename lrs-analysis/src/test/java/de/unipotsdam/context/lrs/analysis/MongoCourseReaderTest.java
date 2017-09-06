@@ -14,7 +14,7 @@ public class MongoCourseReaderTest {
 	public void shouldReadAttendedCourses() throws Exception {
 		Collection<Course> result = new MongoCourseReader("hgessner").call();
 		for (Course course : result) {
-			System.out.println(course.getName());
+			System.out.println(course.getName() + " " + course.getSemesterId());
 		}
 		assertFalse(result.isEmpty());
 	}

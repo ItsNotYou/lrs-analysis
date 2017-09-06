@@ -3,30 +3,32 @@ package de.unipotsdam.context.lrs.analysis.data;
 public class Course {
 
 	private String name;
-	private String startDate;
-	private String endDate;
+	private String semesterStart;
+	private String semesterEnd;
+	private String semesterId;
 
-	public Course() {
+	public String getSemesterId() {
+		return semesterId;
 	}
 
-	public Course(String name) {
-		this.name = name;
+	public void setSemesterId(String semesterId) {
+		this.semesterId = semesterId;
 	}
 
-	public String getStartDate() {
-		return startDate;
+	public String getSemesterStart() {
+		return semesterStart;
 	}
 
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
+	public void setSemesterStart(String semesterStart) {
+		this.semesterStart = semesterStart;
 	}
 
-	public String getEndDate() {
-		return endDate;
+	public String getSemesterEnd() {
+		return semesterEnd;
 	}
 
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
+	public void setSemesterEnd(String semesterEnd) {
+		this.semesterEnd = semesterEnd;
 	}
 
 	public String getName() {

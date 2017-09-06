@@ -6,6 +6,25 @@ public class CourseName {
 
 	private String enUS;
 	private String deDE;
+	private String semesterStart;
+
+	public String getSemesterStart() {
+		return semesterStart;
+	}
+
+	public void setSemesterStart(String semesterStart) {
+		this.semesterStart = semesterStart;
+	}
+
+	public String getSemesterEnd() {
+		return semesterEnd;
+	}
+
+	public void setSemesterEnd(String semesterEnd) {
+		this.semesterEnd = semesterEnd;
+	}
+
+	private String semesterEnd;
 
 	@XmlAttribute(name = "en-US")
 	public String getEnUS() {
