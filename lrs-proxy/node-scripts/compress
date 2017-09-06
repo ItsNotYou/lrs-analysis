@@ -2,12 +2,12 @@ var buildify = require('buildify');
 
 buildify()
   .setDir('./src/main/webapp/tag-it')
-  .concat(['jquery-3.2.1.min.js', 'jquery-ui.min.js', 'tag-it.js', 'suggestions.js'])
-  .setDir('./target/lrs-analysis/tag-it')
+  .concat(['jquery-3.2.1.min.js', 'jquery-ui.min.js', 'tag-it.js', 'moment.js', 'suggestions.js'])
+  .setDir('./target/lrs-proxy/tag-it')
   .save('suggestions.full.js');
 
 buildify()
   .setDir('./src/main/webapp/tag-it')
   .concat(['tagit.ui-custom.css', 'jquery.tagit.css'])
-  .setDir('./target/lrs-analysis/tag-it')
+  .setDir('./target/lrs-proxy/tag-it')
   .save('tagit.full.css');
