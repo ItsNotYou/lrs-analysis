@@ -1,20 +1,23 @@
 // Type definitions
 
 /**
- * Maps a server response to labeled data. The returned objects may contain arbitrary fields, but a label field is required
  * @callback ResponseMapper
+ * Maps a server response to labeled data. The returned objects may contain arbitrary fields, but a label field is required
  * @param {*} tags - LRS analysis response
  * @returns {Array<{label: String}>}
  */
 
 /**
- * Handles a tag add event. The given tag content may contain arbitrary fields defined in the associated ResponseMapper
  * @callback TagAddCallback
+ * Handles a tag add event. The given tag content may contain arbitrary fields defined in the associated ResponseMapper
  * @param {Array<{label: String}>} tag - Tag content
  * @see ResponseMapper
  */
 
+
 // Implementations
+
+var blacklist = ["tenoriof", "matweise", "dehne", "vwoelfer", "mazandar", "moebert", "zeisse", "morgiel"];
 
 /**
  * 
@@ -25,6 +28,17 @@
  * @returns
  */
 function loadSuggestions(user, tagitElement, responseMapper, addCallback) {
+	// Skip blacklisted users
+	if (blacklist.indexOf(user) !== -1) {
+		// Remove suggestions label and list
+		$(document).ready(function() {
+			var id = tagitElement.attr("id");
+			tagitElement.remove();
+			$("label[for=" + id + "]").remove();
+		});
+		return;
+	}
+	
 	var addLabels = function(labels) {
 		$(document).ready(function() {
 			// Add labels

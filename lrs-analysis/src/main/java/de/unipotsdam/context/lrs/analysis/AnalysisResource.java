@@ -1,30 +1,35 @@
 package de.unipotsdam.context.lrs.analysis;
 
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unipotsdam.context.lrs.analysis.data.CourseEvent;
 import de.unipotsdam.context.lrs.analysis.data.CurrentlyAttendedCoursesResponse;
 import de.unipotsdam.context.lrs.analysis.data.ProfileResponse;
-import de.unipotsdam.context.lrs.analysis.filter.CoursesFilter;
 import de.unipotsdam.context.lrs.analysis.filter.ProfileFilter;
+import de.unipotsdam.context.lrs.analysis.filter.RunningCoursesFilter;
 
 @Path("/users")
 public class AnalysisResource {
 
+	private static final Logger log = Logger.getLogger(AnalysisResource.class.getName());
+
 	@GET
-	@Path("/courses/current")
+	@Path("/{user}/courses/current")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public CurrentlyAttendedCoursesResponse getCurrentlyAttendedCourses(@QueryParam("ldapShortname") String ldapShortname) {
-		List<CourseEvent> result = new CoursesFilter().getCurrentlyAttendedCourses(ldapShortname);
-		return new CurrentlyAttendedCoursesResponse(result);
+	public CurrentlyAttendedCoursesResponse getCurrentlyAttendedCourses(@PathParam("user") String ldapShortname) {
+		try (RunningCoursesFilter courses = new RunningCoursesFilter()) {
+			return courses.getCurrentlyAttendedCourses(ldapShortname);
+		} catch (Exception e) {
+			log.log(Level.INFO, "Could not read current courses for " + ldapShortname, e);
+			throw new WebApplicationException(e, 500);
+		}
 	}
 
 	@GET
@@ -34,7 +39,8 @@ public class AnalysisResource {
 		try (ProfileFilter profiles = new ProfileFilter()) {
 			return profiles.getProfile(ldapShortname);
 		} catch (Exception e) {
-			throw new WebApplicationException("Could not read data from data source", 500);
+			log.log(Level.INFO, "Could not read profile for " + ldapShortname, e);
+			throw new WebApplicationException(e, 500);
 		}
 	}
 }

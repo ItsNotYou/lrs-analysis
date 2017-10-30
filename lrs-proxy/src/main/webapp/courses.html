@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Course associater</title>
+        
+        <!-- jQuery, Underscore -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        
+        <!-- xAPI -->
+        <script src="js/xapiwrapper.min.js"></script>
+    </head>
+    <body>
+    	<style>
+    		h4 {
+    			margin-top: 0;
+    			margin-bottom: 16px;
+    		}
+    		
+    		.bordered {
+    			border: 1px solid;
+    			border-radius: 16px;
+    			padding: 16px;
+    			margin: 16px;
+    		}
+    		
+    		.submit {
+    			margin: 16px;
+    		}
+    	</style>
+    	
+        <form id="associater">
+        	<div class="bordered">
+        		<h4>Mobile.UP / PULS</h4>
+        		
+	        	<label for="semester">Semester:</label>
+	        	<input type="text" id="semester"><br>
+	        	
+	        	<label for="courseId">Course ID:</label>
+	        	<input type="text" id="courseId"><br>
+        	</div>
+        
+        	<div class="bordered">
+        		<h4>Campus.UP</h4>
+        		
+        		<label for="groupId">Group ID:</label>
+        		<input type="text" id="groupId"><br>
+        		
+        		<label for="userId">User ID:</label>
+        	<input type="text" id="userId"><br>
+        	</div>
+        	
+        	<div class="submit">
+        		<input type="submit">
+        	</div>
+        </form>
+
+        <!-- include source files here... -->
+        <script type="text/javascript" src="js/courses.js"></script>
+    </body>
+</html>

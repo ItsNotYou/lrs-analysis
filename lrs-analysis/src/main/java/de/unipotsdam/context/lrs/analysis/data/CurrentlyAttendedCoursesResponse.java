@@ -1,16 +1,16 @@
 package de.unipotsdam.context.lrs.analysis.data;
 
-import java.util.List;
+import java.util.Collection;
 
 public class CurrentlyAttendedCoursesResponse {
 
-	private List<CourseEvent> result;
+	private Collection<CourseWorkspacePair> courses;
 
-	public CurrentlyAttendedCoursesResponse(List<CourseEvent> result) {
-		this.result = result;
+	public Collection<CourseWorkspacePair> getCourses() {
+		return courses;
 	}
 
-	public List<CourseEvent> getResult() {
-		return result;
+	public void setCourses(Collection<CourseWorkspacePair> result) {
+		this.courses = result;
 	}
 }

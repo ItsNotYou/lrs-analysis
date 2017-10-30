@@ -25,9 +25,10 @@ public class LRS {
 
 	public LRS() throws IOException {
 		// Get LRS configuration
-		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("lrs.properties");
 		Properties properties = new Properties();
-		properties.load(input);
+		try (InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("lrs.properties")) {
+			properties.load(input);
+		}
 
 		// Load necessary properties
 		this.lrsUrl = properties.getProperty("lrs.url");

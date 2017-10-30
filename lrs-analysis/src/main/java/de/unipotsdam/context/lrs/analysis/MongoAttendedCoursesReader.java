@@ -1,5 +1,6 @@
-package de.unipotsdam.context.lrs.analysis.filter;
+package de.unipotsdam.context.lrs.analysis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,36 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
-
-import org.glassfish.jersey.uri.UriComponent;
-
-import com.google.gson.Gson;
-
 import de.unipotsdam.context.lrs.analysis.data.CourseEvent;
 import de.unipotsdam.context.lrs.analysis.data.CourseEventsResponse;
 import de.unipotsdam.context.lrs.analysis.data.EventGroupings;
 import de.unipotsdam.context.lrs.analysis.data.EventStatement;
-import gov.adlnet.xapi.util.Base64;
 
-public class CoursesFilter {
-
-	private static final String lrsUrl = "http://lrs.soft.cs.uni-potsdam.de/";
-	private static final String username = "f1e520976fb3cd27127bef0bfd2c4af924bfd2fc";
-	private static final String password = "b4f0955aea62c4d9f94a98e32a400e665f7338a7";
-
-	private <T> T readFromLrs(Object pipeline, Class<T> responseEntity) {
-		String pipeJson = asJson(pipeline);
-
-		String loginData = username + ":" + password;
-		String login = ("Basic " + Base64.encodeToString(loginData.getBytes(), Base64.DEFAULT)).replace("\n", "");
-
-		Client client = ClientBuilder.newClient();
-		Response response = client.target(lrsUrl).path("/api/v1/statements/aggregate").queryParam("pipeline", pipeJson).request().header("Authorization", login).get();
-		return response.readEntity(responseEntity);
-	}
+public class MongoAttendedCoursesReader {
 
 	private Map<String, Object> map(Object... keyValuePairs) {
 		Map<String, Object> result = new HashMap<>();
@@ -47,12 +24,7 @@ public class CoursesFilter {
 		return result;
 	}
 
-	private String asJson(Object object) {
-		String json = new Gson().toJson(object);
-		return UriComponent.contextualEncode(json, UriComponent.Type.QUERY_PARAM, false);
-	}
-
-	public List<CourseEvent> getCurrentlyAttendedCourses(String ldapShortname) {
+	public List<CourseEvent> getCurrentlyAttendedCourses(String ldapShortname) throws IOException {
 		String user = "mailto:" + ldapShortname + "@uni-potsdam.de";
 
 		// TODO: Tweak query to only include opened, closed, adjorned, resumed, user joined and user left
@@ -61,7 +33,7 @@ public class CoursesFilter {
 		pipeline.add(map("$group", map("_id", "$statement.object.id", "statements", map("$push", "$statement"))));
 		pipeline.add(map("$project", map("statements", map("actor", 1, "verb", 1, "timestamp", 1, "object", map("definition", map("name", 1))))));
 
-		CourseEventsResponse events = readFromLrs(pipeline, CourseEventsResponse.class);
+		CourseEventsResponse events = new LRS().query(pipeline, CourseEventsResponse.class);
 		List<EventGroupings> groupings = events.getResult();
 
 		// check for attendance
@@ -103,7 +75,7 @@ public class CoursesFilter {
 		});
 
 		// Replay event
-		boolean isRunning = false;
+		Boolean isRunning = null;
 		boolean isAttending = false;
 		for (EventStatement stmt : grouping.getStatements()) {
 			String verbId = stmt.getVerb().getId();
@@ -133,7 +105,11 @@ public class CoursesFilter {
 			}
 		}
 
-		// Check if event is running and user is attending
-		return isRunning && isAttending;
+		// We have to do a Boolean false check because isRunning uses a three valued truth with yes (true), no (false) and unknown (null)
+		// and we want to recognise both true and null as true
+		boolean isAssumedRunning = isRunning == null || isRunning;
+
+		// Check if event is assumed running and user is attending
+		return isAssumedRunning && isAttending;
 	}
 }

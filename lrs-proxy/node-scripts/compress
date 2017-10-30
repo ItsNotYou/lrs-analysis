@@ -2,7 +2,7 @@ var buildify = require('buildify');
 
 buildify()
   .setDir('./src/main/webapp/tag-it')
-  .concat(['jquery-3.2.1.min.js', 'jquery-ui.min.js', 'tag-it.js', 'moment.js', 'suggestions.js'])
+  .concat(['jquery-3.2.1.min.js', 'jquery-ui.min.js', 'polyfill.js', 'tag-it.js', 'moment.js', 'suggestions.js'])
   .setDir('./target/lrs-proxy/tag-it')
   .save('suggestions.full.js');
 
@@ -11,3 +11,9 @@ buildify()
   .concat(['tagit.ui-custom.css', 'jquery.tagit.css'])
   .setDir('./target/lrs-proxy/tag-it')
   .save('tagit.full.css');
+
+buildify()
+  .setDir('./src/main/webapp/current-courses')
+  .concat(['jquery-3.2.1.min.js', 'underscore-min.js', 'current-courses.js'])
+  .setDir('./target/lrs-proxy/current-courses')
+  .save('current-courses.full.js');

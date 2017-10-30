@@ -1,13 +1,8 @@
 package de.unipotsdam.context.lrs.analysis.data;
 
-import java.util.List;
-
 public class CourseEvent {
 
 	private String id;
-	private List<String> parents;
-	private List<String> groupings;
-	private List<String> others;
 
 	public CourseEvent() {
 	}
