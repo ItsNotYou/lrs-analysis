@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.unipotsdam.context</groupId>
+	<artifactId>mobileup-master</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1</version>
+
+	<name>Mobile.UP master</name>
+
+	<properties>
+		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<netbeans.hint.j2eeVersion>1.6</netbeans.hint.j2eeVersion>
+		<netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+	</properties>
+
+	<dependencies>
+	</dependencies>
+
+	<build>
+		<finalName>mobileup-master</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<configuration>
+					<server>LocalTomcat</server>
+					<url>http://127.0.0.1:8080/manager/text</url>
+					<username>${tomcat.username}</username>
+					<password>${tomcat.password}</password>
+					<path>/mobileup-master</path>
+					<update>true</update>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<compilerArguments>
+						<endorseddirs>${endorsed.dir}</endorseddirs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${endorsed.dir}</outputDirectory>
+							<silent>true</silent>
+							<artifactItems>
+								<artifactItem>
+									<groupId>javax</groupId>
+									<artifactId>javaee-endorsed-api</artifactId>
+									<version>6.0</version>
+									<type>jar</type>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<url>http://central.maven.org/maven2/</url>
+			<id>central</id>
+			<layout>default</layout>
+			<name>Central Repository</name>
+		</repository>
+		<repository>
+			<url>http://repo1.maven.org/maven2/</url>
+			<id>junit_4</id>
+			<layout>default</layout>
+			<name>Repository for library Library[junit_4]</name>
+		</repository>
+		<repository>
+			<url>http://fossa.soft.cs.uni-potsdam.de:8081/artifactory/elis-repository/</url>
+			<id>elis</id>
+			<layout>default</layout>
+			<name>Repository for eLiS library</name>
+		</repository>
+	</repositories>
+</project>
